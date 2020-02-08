@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: gwifi-ping
+  labels:
+    k8s-app: gwifi-ping
+spec:
+  selector:
+    matchLabels:
+      name: gwifi-ping
+  template:
+    metadata:
+      labels:
+        name: gwifi-ping
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: gwifi-ping
+        image: randomtask1155/gwifi-ping:latest
+        env:
+          - name: PING_HOST
+            valueFrom:
+              secretKeyRef:
+                name: gwifi-port-env
+                key: PING_HOST
+          - name: PING_INTERVAL
+            valueFrom:
+              secretKeyRef:
+                name: gwifi-port-env
+                key: PING_INTERVAL
